@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  user_auth_api:
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: mariadb
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: victorious
+      MYSQL_DATABASE: user_auth_db
+      MYSQL_USER: auth_db_user
+      MYSQL_PASSWORD: victorious
+    ports:
+      - 13306:3306
+    expose:
+      - 3306
+    volumes:
+      - /var/lib/mysql
