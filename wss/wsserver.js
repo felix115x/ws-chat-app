@@ -1,11 +1,12 @@
 const WebSocket = require('ws');
 const WS_PORT = process.env.PORT | 3030;
 
-module.exports = function() {
+module.exports = function () {
 
     const webSocketServer = new WebSocket.Server({port: WS_PORT});
 
-    webSocketServer.on('connection', function connection(ws)  {
+    // TODO user per connection logic. If user already exists, return 'error' or something
+    webSocketServer.on('connection', function connection(ws) {
 
         console.log(webSocketServer.clients);
         ws.on('message', function incoming(data) {

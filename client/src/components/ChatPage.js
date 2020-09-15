@@ -1,8 +1,9 @@
 import React, {Fragment, useEffect, useState} from 'react'
 import {Message} from "./Message";
 
-const ws = new WebSocket('ws://localhost:3030');
+const ws = new WebSocket('ws://localhost:3030');    // TODO dev/prod environment URL
 
+// TODO messaging, message history display, etc
 const ChatPage = () => {
 
     const [messages, updateMessages] = useState([]);

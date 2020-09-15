@@ -9,7 +9,7 @@ import './App.css';
 function App() {
     const [isAuthenticated, userHasAuthenticated] = useState(false);
 
-    async function onLoad() {
+    async function onLoad() {   // TODO use redux (or React contextApi)
         try {
             //await Auth.currentSession();
             userHasAuthenticated(true);

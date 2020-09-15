@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react'
 import {useHistory} from 'react-router-dom';
 
+// TODO Finish 'login' functionality (just pass username to the server)
 const LoginPage = () => {
     const history = useHistory();
 
