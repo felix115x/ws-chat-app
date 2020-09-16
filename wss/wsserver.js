@@ -1,29 +1,53 @@
 const WebSocket = require('ws');
+const { USER_JOIN, USER_LIST, wsBroadcast, POST_MSG } = require('../util');
 const WS_PORT = process.env.PORT | 3030;
 
 module.exports = function () {
 
-    const webSocketServer = new WebSocket.Server({port: WS_PORT});
+    const wsServer = new WebSocket.Server({ port: WS_PORT });
 
-    // TODO user per connection logic. If user already exists, return 'error' or something
-    webSocketServer.on('connection', function connection(ws) {
+    /* simple data structure for all users present in the chat room */
+    const userSet = new Set();
 
-        console.log(webSocketServer.clients);
-        ws.on('message', function incoming(data) {
-            console.log('ON MESSAGE ' + data)
-            webSocketServer.clients.forEach(function each(client) {
-                if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(data);
+    wsServer.on('connection', (socket) => {
+        let connectionIndex;
 
-                    console.log('ON MESSAGE EVENT');
-                    console.log(data);
-                }
-            });
+        socket.on('message', (data) => {
+            const message = JSON.parse(data);
+
+            switch (message.type) {
+                case USER_JOIN: // TODO: if no such user is present
+                    connectionIndex = userSet.size;
+                    userSet.add({ name: message.name, id: connectionIndex });
+
+                    socket.send({
+                        type: USER_LIST,
+                        users: userSet
+                    });
+
+                    wsBroadcast(wsServer, socket, {
+                        type: USER_LIST,
+                        users: userSet
+                    });
+
+                    break;
+
+                case POST_MSG:
+                    wsBroadcast(wsServer, socket, {
+                        type: POST_MSG,
+                        content: message.content,
+                        author: message.author
+                    });
+
+                    break;
+
+                default:
+                    break;
+            }
         });
 
-        // TODO Close connection
-        ws.on('close', (data) => {
-
+        socket.on('close', () => {
+            userSet.forEach((user) => user.id === connectionIndex ? userSet.delete(user) : user);
         })
     });
 };

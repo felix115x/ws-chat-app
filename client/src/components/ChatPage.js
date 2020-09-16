@@ -17,8 +17,7 @@ const ChatPage = () => {
 
     const handleSend = (e) => {
         ws.send(JSON.stringify(message))
-        addMessage(message)
-        console.log(message);
+        addMessage(message);
     };
 
     useEffect(() => {
